@@ -1,5 +1,4 @@
 import * as React from 'react';
-import logo from '../../static/logo.png';
 import lisbon from '../../static/lisbon.jpg';
 import barcelona from '../../static/barcelona.jpg';
 import berlin from '../../static/berlin.jpg';
@@ -7,6 +6,12 @@ import { AppBar, ButtonBase, Theme, createStyles, withStyles, WithStyles, Toolba
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
 import classNames from 'classnames';
+import Navbar from '../navbar/navbar';
+import ReactSVG from 'react-svg';
+import flight from '../../static/flight.svg';
+import car from '../../static/car.svg';
+import house from '../../static/house.svg';
+import taxi from '../../static/taxi.svg';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -26,37 +31,40 @@ const styles = (theme: Theme) =>
             width: '75px',
             color: 'black'
         },
-        card: {
-            width: '50%',
-            height: '50%'
-        },
         logo: {
             marginLeft: '10px',
             width: '15%'
+        },
+        slideLegend: {
+            background: '#00AEEF',
+            bottom: 10,
+            left: 0,
+            marginLeft: -6,
+            width: 250,
+            borderRadius: 4
         }
     });
 
+export interface State {
+    register: boolean;
+}
+
 type PropsWithStyles = WithStyles<typeof styles>;
 
-class Homepage extends React.Component<PropsWithStyles> {
+class Homepage extends React.Component<PropsWithStyles, State> {
 
     constructor(props: PropsWithStyles) {
         super(props);
+        this.state = {
+            register: false,
+        }
     }
 
     render() {
         return (
             <div>
+                <Navbar />
                 <div>
-                    <AppBar className={classNames(this.props.classes.AppBar)} elevation={0}>
-                        <Toolbar>
-                            <img src={logo} className={classNames(this.props.classes.logo)} />
-                            <div style={{ right: 0 }}>
-                                <ButtonBase className={classNames(this.props.classes.navButton)}>Login</ButtonBase>
-                                <ButtonBase className={classNames(this.props.classes.navButton)}>Register</ButtonBase>
-                            </div>
-                        </Toolbar>
-                    </AppBar>
                     <div style={{ position: 'absolute', top: 75 }}>
                         <div style={{ margin: '0 auto', }}>
                             <Carousel showThumbs={false} autoPlay showArrows
@@ -68,31 +76,53 @@ class Homepage extends React.Component<PropsWithStyles> {
                                 </div>
                                 <div>
                                     <img src={barcelona}></img>
-                                    <p className="legend" style={{ background: 'blue' }}> Barcelona, Book a Trip Now >> </p>
+                                    <p className="legend" style={{ background: '#00AEEF', bottom: 10, left: 0, marginLeft: -6, width: 250, borderRadius: 4 }}> Barcelona, Book a Trip Now >> </p>
                                 </div>
                                 <div>
                                     <img src={berlin}></img>
-                                    <p className="legend" style={{ background: 'blue' }}> Berlin, Book a Trip Now >> </p>
+                                    <p className="legend" style={{ background: '#00AEEF', bottom: 10, left: 0, marginLeft: -6, width: 250, borderRadius: 4 }}> Berlin, Book a Trip Now >> </p>
                                 </div>
                             </Carousel>
                         </div>
                     </div>
                 </div>
                 <div style={{ position: 'absolute', width: '100%', top: 400, margin: '0 auto' }}>
-                    <div style={{ display: 'inline-block', width: '25%', textAlign: 'center' }}>
-                        Rent a House
+                    <div style={{ display: 'inline-block', width: '25%', textAlign: 'center', height: '200px', verticalAlign: 'top' }}>
+                        Book a House
+                        <div>
+                            <ReactSVG src={house} beforeInjection={svg => {
+                                svg.setAttribute('width', '70%')
+                                svg.setAttribute('height', '70%')
+                            }} />
+                            View multiple Accomodations for your Trip and find the best houses with the best prices.
+                        </div>
                     </div>
-                    <div style={{ display: 'inline-block', width: '25%', textAlign: 'center' }}>
-
-                        Rent a Taxi
+                    <div style={{ display: 'inline-block', width: '25%', textAlign: 'center', height: '200px', verticalAlign: 'top' }}>
+                        Rent a Car
+                        <ReactSVG src={car} beforeInjection={svg => {
+                            svg.setAttribute('width', '50%')
+                            svg.setAttribute('height', '50%')
+                        }} />
+                        Move faster during a trip by renting a car. The most recent cars with the best prices.
                     </div>
-                    <div style={{ display: 'inline-block', width: '25%', textAlign: 'center' }}>
-
-                        Rent a Plane
+                    <div style={{ display: 'inline-block', width: '25%', textAlign: 'center', height: '200px', verticalAlign: 'top' }}>
+                        Book a Trip
+                        <div>
+                            <ReactSVG src={flight} beforeInjection={svg => {
+                                svg.setAttribute('width', '65%')
+                                svg.setAttribute('height', '65%')
+                            }} />
+                            Go on vacations with booking and have the best flights guaranteed!
+                        </div>
                     </div>
-                    <div style={{ display: 'inline-block', width: '25%', textAlign: 'center' }}>
+                    <div style={{ display: 'inline-block', width: '25%', textAlign: 'center', height: '200px', verticalAlign: 'top' }}>
+                        Book a Taxi
+                        <ReactSVG src={taxi} beforeInjection={svg => {
+                            svg.setAttribute('width', '50%')
+                            svg.setAttribute('height', '100%')
+                        }} />
 
-                        Rent a Life
+                        With Booking.com you can easily book a taxi to pick you from anywhere you want, anytime you want.
                     </div>
                 </div>
             </div>
