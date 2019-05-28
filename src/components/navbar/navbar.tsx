@@ -1,16 +1,17 @@
 import * as React from 'react';
 import logo from '../../static/logo.png';
-import { AppBar, ButtonBase, Theme, createStyles, withStyles, WithStyles, Toolbar, Avatar, MenuItem, Popper, Paper, MenuList, Icon } from '@material-ui/core';
+import { AppBar, ButtonBase, Theme, createStyles, withStyles, WithStyles, Toolbar, Avatar, MenuItem, Popper, Paper, MenuList, Icon, Grid, Typography } from '@material-ui/core';
 import classNames from 'classnames';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grow from '@material-ui/core/Grow';
 import Register from '../homepage/register/register';
 import Login from '../homepage/login/login';
+import { Link } from '@reach/router';
 
 const styles = (theme: Theme) =>
     createStyles({
         AppBar: {
-            background: 'transparent',
+            background: 'white',
             position: 'absolute',
             height: '75px'
         },
@@ -23,7 +24,7 @@ const styles = (theme: Theme) =>
             marginRight: '5px',
             display: 'inline-block',
             width: '75px',
-            color: 'black'
+            color: 'black',
         },
         divButtons: {
             marginLeft: 'auto',
@@ -36,107 +37,127 @@ const styles = (theme: Theme) =>
         },
         avatar: {
             marginRight: '30px'
+        },
+        buttonText: {
+            marginLeft: '5px',
+            display: 'inline-block'
         }
     });
 
 export interface State {
     register: boolean;
-    loggedIn: boolean;
     login: boolean;
     menuOpen: boolean;
 }
 
-type PropsWithStyles = WithStyles<typeof styles>;
+export interface Props {
+    addNewUser: (firstName: string, lastName: string, email: string, password: string) => void;
+    login: (email: string, password: string) => boolean;
+    loggedIn: boolean;
+    handleLoginPrompt: (event: React.MouseEvent<EventTarget>) => void;
+}
 
-class Navbar extends React.Component<PropsWithStyles, State> {
-    private anchorEl: HTMLElement;
-    constructor(props: PropsWithStyles) {
-        super(props);
-        this.state = {
-            register: false,
-            loggedIn: true,
-            login: false,
-            menuOpen: false
-        }
-        this.anchorEl = null;
+const initialState: State = {
+    register: false,
+    login: false,
+    menuOpen: false
+}
+
+type PropsWithStyles = Props & WithStyles<typeof styles>;
+
+function Navbar(props: PropsWithStyles) {
+    const anchorRef = React.useRef<HTMLButtonElement>(null);
+    const [login, setLogin] = React.useState(false);
+    const [menuOpen, setMenu] = React.useState(false);
+    const [register, setRegister] = React.useState(false);
+
+    function handleRegister(event: React.MouseEvent<HTMLButtonElement>) {
+        setRegister(!register);
     }
 
-    handleRegister = (event: React.MouseEvent<HTMLButtonElement>) => {
-        this.setState({
-            register: !this.state.register
-        });
+    function handleCancelLogin(event: React.MouseEvent<HTMLButtonElement>) {
+        setLogin(!login);
     }
 
-    handleLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
-        this.setState({
-            login: !this.state.login
-        });
+    function handleChangeEvent(event: React.ChangeEvent<{}>) {
     }
 
-    handleChangeEvent = (event: React.ChangeEvent<{}>) => {
+    function handleMenu(event: React.MouseEvent<EventTarget>) {
+        setMenu(!menuOpen)
     }
 
-    handleMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-        this.setState({
-            menuOpen: !this.state.menuOpen
-        });
+    function handleLogout(event: React.MouseEvent<EventTarget>) {
+        props.handleLoginPrompt(event);
+        setMenu(false);
     }
 
-    handleLogout = (event: React.MouseEvent<HTMLButtonElement>) => {
-        this.setState({
-            loggedIn: false,
-            menuOpen: false
-        })
-    }
 
-    render() {
-        return (<div>
-            {this.state.register && <Register registerOpen={this.state.register}
-                handleCancel={this.handleRegister} handleLogin={this.handleLogin} />}
-            {this.state.login && <Login handleCancel={this.handleLogin} loginOpen={this.state.login} />}
-            <AppBar className={classNames(this.props.classes.AppBar)} elevation={0}>
-                <Toolbar>
-                    <img src={logo} className={classNames(this.props.classes.logo)} />
-                    <div className={classNames(this.props.classes.divButtons)}>
-                        {this.state.loggedIn ?
-                            <div>
-                                <ButtonBase buttonRef={node => {
-                                    this.anchorEl = node;
-                                }}
-                                    onClick={this.handleMenu}
-                                    aria-owns={this.state.menuOpen ? 'menu-list-grow' : undefined}
-                                    aria-haspopup="true"
-                                    className={classNames(this.props.classes.avatar)}>
-                                    <Avatar>H</Avatar>
-                                </ButtonBase>
-                                <Popper open={this.state.menuOpen} anchorEl={this.anchorEl} transition disablePortal>
-                                    {({ TransitionProps, placement }) => (
-                                        <Grow
-                                            {...TransitionProps}
-                                            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                                        >
-                                            <Paper>
-                                                <ClickAwayListener onClickAway={this.handleChangeEvent}>
-                                                    <MenuList>
-                                                        <MenuItem onClick={this.handleLogin}>Profile</MenuItem>
-                                                        <MenuItem onClick={this.handleLogin}>My account</MenuItem>
-                                                        <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
-                                                    </MenuList>
-                                                </ClickAwayListener>
-                                            </Paper>
-                                        </Grow>
-                                    )}</Popper></div> : <div>
-                                <ButtonBase className={classNames(this.props.classes.navButton)}
-                                    onClick={this.handleRegister}><Icon>person_add</Icon>Register</ButtonBase>
-                                <ButtonBase className={classNames(this.props.classes.navButton)}
-                                    onClick={this.handleLogin}><Icon>account_circle</Icon>Login</ButtonBase></div>
-                        }
-                    </div>
-                </Toolbar>
-            </AppBar>
-        </div>
-        );
-    }
+    return (<div>
+        {register && <Register registerOpen={register}
+            handleCancel={handleRegister} handleLogin={handleCancelLogin} addNewUser={props.addNewUser} />}
+        {login &&
+            <Login login={props.login} hideLogin={handleCancelLogin}
+                handleCancel={handleCancelLogin} loginOpen={login} />}
+        <AppBar className={classNames(props.classes.AppBar)} elevation={0}>
+            <Toolbar>
+                <img src={logo} className={classNames(props.classes.logo)} />
+                <div className={classNames(props.classes.divButtons)}>
+                    {props.loggedIn ?
+                        <div>
+                            <Link to="booking">Booking</Link>
+                            <ButtonBase buttonRef={this.anchorRef}
+                                onClick={handleMenu}
+                                aria-owns={menuOpen ? 'menu-list-grow' : undefined}
+                                aria-haspopup="true"
+                                className={classNames(props.classes.avatar)}>
+                                <Avatar>H</Avatar>
+                                <Typography> Hello, Rúben</Typography>
+                            </ButtonBase>
+                            <Popper open={menuOpen} anchorEl={this.anchorRef.current} transition disablePortal>
+                                {({ TransitionProps, placement }) => (
+                                    <Grow
+                                        {...TransitionProps}
+                                        style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                                    >
+                                        <Paper id="menu-list-grow">
+                                            <ClickAwayListener onClickAway={handleChangeEvent}>
+                                                <MenuList>
+                                                    <MenuItem onClick={handleMenu}>Profile</MenuItem>
+                                                    <MenuItem onClick={handleMenu}>My account</MenuItem>
+                                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                                </MenuList>
+                                            </ClickAwayListener>
+                                        </Paper>
+                                    </Grow>
+                                )}</Popper></div> : <div>
+                            <ButtonBase className={classNames(props.classes.navButton)}
+                                onClick={handleRegister}><Grid container direction="row" alignItems="center">
+                                    <Grid item>
+                                        <Icon>person_add</Icon>
+                                    </Grid>
+                                    <Grid item>
+                                        Register
+                                        </Grid>
+                                </Grid>
+                            </ButtonBase>
+                            <ButtonBase className={classNames(props.classes.navButton)}
+                                onClick={handleCancelLogin}>
+                                <Grid container direction="row" alignItems="center">
+                                    <Grid item>
+                                        <Icon>account_circle</Icon>
+                                    </Grid>
+                                    <Grid item>
+                                        Login
+                                        </Grid>
+                                </Grid>
+                            </ButtonBase>
+                        </div>
+                    }
+                </div>
+            </Toolbar>
+        </AppBar>
+    </div>
+    );
 }
 
 export default withStyles(styles)(Navbar);

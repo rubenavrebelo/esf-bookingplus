@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ButtonBase, TextField, withStyles, WithStyles, createStyles, Theme } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ButtonBase, TextField, withStyles, WithStyles, createStyles, Theme, Grid } from '@material-ui/core';
 import classNames from 'classnames';
 
 const styles = (theme: Theme) =>
@@ -10,20 +10,39 @@ const styles = (theme: Theme) =>
         passwordField: {
             width: '50%'
         },
+        nameField: {
+            display: 'inline-block'
+        }
     });
 
 export interface Props {
     registerOpen: boolean;
     handleCancel: (event: React.MouseEvent<HTMLButtonElement>) => void;
     handleLogin: (event: React.MouseEvent<HTMLButtonElement>) => void;
+    addNewUser: (firstName: string, lastName: string, email: string, password: string) => void;
 }
 
 export interface State {
     continue: boolean;
     typedPassword: string;
     typedEmail: string;
+    typedFirstName: string;
+    typedLastName: string;
+    validFirstName: boolean;
+    validLastName: boolean;
     validPassword: boolean;
     validEmail: boolean;
+}
+
+const defaultState = {
+    typedPassword: '',
+    typedEmail: '',
+    typedFirstName: '',
+    typedLastName: '',
+    validFirstName: true,
+    validLastName: true,
+    validPassword: false,
+    validEmail: false
 }
 
 type PropsWithStyles = Props & WithStyles<typeof styles>;
@@ -33,12 +52,9 @@ class Register extends React.Component<PropsWithStyles, State> {
         super(props);
 
         this.state = {
-            continue: false,
-            typedPassword: '',
-            typedEmail: '',
-            validPassword: false,
-            validEmail: false
-        }
+            ...defaultState,
+            continue: false
+        };
     }
 
     handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,6 +63,23 @@ class Register extends React.Component<PropsWithStyles, State> {
             typedPassword: event.target.value,
             validPassword: passwordRegex.test(event.target.value)
         })
+    }
+
+    handleFirstName = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const emptyRegex = /[^\s]$/;
+        console.log(emptyRegex.test(event.target.value))
+        this.setState({
+            typedFirstName: event.target.value,
+            validFirstName: emptyRegex.test(event.target.value)
+        });
+    }
+
+    handleLastName = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const emptyRegex = /[^\s]$/;
+        this.setState({
+            typedLastName: event.target.value,
+            validLastName: emptyRegex.test(event.target.value)
+        });
     }
 
     handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,9 +91,15 @@ class Register extends React.Component<PropsWithStyles, State> {
     }
 
     handleContinue = (event: React.MouseEvent<HTMLButtonElement>) => {
+        const { typedFirstName, typedLastName, typedEmail, typedPassword } = this.state;
+        console.log(this.state.validPassword && this.state.validEmail);
         this.setState({
             continue: this.state.validPassword && this.state.validEmail
         });
+        if (this.state.validPassword && this.state.validEmail && this.state.validFirstName && this.state.validLastName) {
+            this.props.addNewUser(typedFirstName, typedLastName, typedEmail, typedPassword);
+            this.setState(defaultState);
+        }
     }
 
     handleLoginAfterRegister = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -69,7 +108,6 @@ class Register extends React.Component<PropsWithStyles, State> {
     }
 
     render() {
-        console.log((this.state.typedPassword !== "") && this.state.validPassword);
         return (<Dialog open={this.props.registerOpen}
             onClose={this.props.handleCancel}>
             {this.state.continue ? <DialogContent className={classNames(this.props.classes.registerDivContinue)}>
@@ -86,9 +124,27 @@ class Register extends React.Component<PropsWithStyles, State> {
                 <div>
                     <DialogTitle>Register here!</DialogTitle>
                     <DialogContent>
+                        <Grid container direction="row" alignItems="center">
+                            <Grid item>
+                                <DialogContentText>
+                                    First Name
+                            </DialogContentText>
+                                <TextField error={!this.state.validFirstName} value={this.state.typedFirstName} onChange={this.handleFirstName} />
+                            </Grid>
+                        </Grid>
+                        <div>
+                            <Grid container direction="row" alignItems="center">
+                                <Grid item>
+                                    <DialogContentText>
+                                        Last Name
+                            </DialogContentText>
+                                    <TextField error={!this.state.validLastName} value={this.state.typedLastName} onChange={this.handleLastName} />
+                                </Grid>
+                            </Grid>
+                        </div>
                         <DialogContentText>
                             Email
-                </DialogContentText>
+                        </DialogContentText>
                         <TextField value={this.state.typedEmail} onChange={this.handleEmail}></TextField>
                         <DialogContentText>
                             Password
