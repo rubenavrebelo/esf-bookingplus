@@ -2,39 +2,18 @@ import * as React from 'react';
 import lisbon from '../../static/lisbon.jpg';
 import barcelona from '../../static/barcelona.jpg';
 import berlin from '../../static/berlin.jpg';
-import { AppBar, ButtonBase, Theme, createStyles, withStyles, WithStyles, Toolbar } from '@material-ui/core';
+import { Theme, createStyles, withStyles, WithStyles } from '@material-ui/core';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
-import classNames from 'classnames';
-import Navbar from '../navbar/navbar';
 import ReactSVG from 'react-svg';
 import flight from '../../static/flight.svg';
 import car from '../../static/car.svg';
 import house from '../../static/house.svg';
 import taxi from '../../static/taxi.svg';
+import { RouteComponentProps } from '@reach/router';
 
 const styles = (theme: Theme) =>
     createStyles({
-        AppBar: {
-            background: 'transparent',
-            position: 'absolute',
-            height: '75px'
-        },
-        links: {
-            position: 'fixed',
-            right: '5%'
-        },
-        navButton: {
-            marginLeft: '5px',
-            marginRight: '5px',
-            display: 'inline-block',
-            width: '75px',
-            color: 'black'
-        },
-        logo: {
-            marginLeft: '10px',
-            width: '15%'
-        },
         slideLegend: {
             background: '#00AEEF',
             bottom: 10,
@@ -49,7 +28,7 @@ export interface State {
     register: boolean;
 }
 
-type PropsWithStyles = WithStyles<typeof styles>;
+type PropsWithStyles = RouteComponentProps & WithStyles<typeof styles>;
 
 class Homepage extends React.Component<PropsWithStyles, State> {
 
@@ -63,7 +42,6 @@ class Homepage extends React.Component<PropsWithStyles, State> {
     render() {
         return (
             <div>
-                <Navbar />
                 <div>
                     <div style={{ position: 'absolute', top: 75 }}>
                         <div style={{ margin: '0 auto', }}>
