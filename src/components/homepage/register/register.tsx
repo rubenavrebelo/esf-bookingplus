@@ -88,6 +88,8 @@ class Register extends React.Component<PropsWithStyles, State> {
             typedEmail: event.target.value,
             validEmail: emailRegex.test(event.target.value),
         })
+
+        console.log(emailRegex.test(event.target.value));
     }
 
     handleContinue = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -118,41 +120,25 @@ class Register extends React.Component<PropsWithStyles, State> {
                 <DialogContentText>
                     Feel free to log in right away or go back from you left off.
                 </DialogContentText>
-                <ButtonBase onClick={this.props.handleCancel}>Cancel</ButtonBase>
-                <ButtonBase onClick={this.handleLoginAfterRegister}>Login Now</ButtonBase>
+                <ButtonBase onClick={this.handleLoginAfterRegister} style={{ float: 'right' }}>Login Now</ButtonBase>
+                <ButtonBase onClick={this.props.handleCancel} style={{ marginRight: '20px', float: 'right' }}>Back</ButtonBase>
             </DialogContent> :
                 <div>
                     <DialogTitle>Register here!</DialogTitle>
                     <DialogContent>
                         <Grid container direction="row" alignItems="center">
                             <Grid item>
-                                <DialogContentText>
-                                    First Name
-                            </DialogContentText>
-                                <TextField error={!this.state.validFirstName} value={this.state.typedFirstName} onChange={this.handleFirstName} />
+                                <TextField label={'First Name'} error={!this.state.validFirstName} value={this.state.typedFirstName} onChange={this.handleFirstName} />
+                            </Grid>
+                            <Grid item style={{ marginLeft: '50px' }}>
+                                <TextField label={'Last Name'} error={!this.state.validLastName} value={this.state.typedLastName} onChange={this.handleLastName} />
                             </Grid>
                         </Grid>
-                        <div>
-                            <Grid container direction="row" alignItems="center">
-                                <Grid item>
-                                    <DialogContentText>
-                                        Last Name
-                            </DialogContentText>
-                                    <TextField error={!this.state.validLastName} value={this.state.typedLastName} onChange={this.handleLastName} />
-                                </Grid>
-                            </Grid>
-                        </div>
-                        <DialogContentText>
-                            Email
-                        </DialogContentText>
-                        <TextField value={this.state.typedEmail} onChange={this.handleEmail}></TextField>
-                        <DialogContentText>
-                            Password
-                        </DialogContentText>
-                        <TextField className={classNames(this.props.classes.passwordField)}
+                        <TextField error={(this.state.typedEmail === '') ? false : !this.state.validEmail} style={{ marginTop: '10px' }} label={'Email'} value={this.state.typedEmail} onChange={this.handleEmail}></TextField>
+                        <div><TextField style={{ marginTop: '10px' }} label={'Password'} className={classNames(this.props.classes.passwordField)}
                             type={'password'} error={(this.state.typedPassword !== "") && !this.state.validPassword}
                             helperText={'Must contain atleast 8 characters, one number, one lowercase letter and an uppercase letter.'}
-                            onChange={this.handlePassword}></TextField>
+                            onChange={this.handlePassword}></TextField></div>
                     </DialogContent>
                     <DialogActions>
                         <ButtonBase onClick={this.props.handleCancel}>Cancel</ButtonBase>

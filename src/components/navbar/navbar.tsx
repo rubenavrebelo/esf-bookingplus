@@ -1,12 +1,14 @@
 import * as React from 'react';
 import logo from '../../static/logo.png';
-import { AppBar, ButtonBase, Theme, createStyles, withStyles, WithStyles, Toolbar, Avatar, MenuItem, Popper, Paper, MenuList, Icon, Grid, Typography } from '@material-ui/core';
+import { AppBar, ButtonBase, Theme, createStyles, withStyles, WithStyles, Toolbar, Avatar, MenuItem, Popper, Paper, MenuList, Icon, Grid, Typography, Button } from '@material-ui/core';
 import classNames from 'classnames';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grow from '@material-ui/core/Grow';
 import Register from '../homepage/register/register';
 import Login from '../homepage/login/login';
-import { Link } from '@reach/router';
+import { Link, navigate } from '@reach/router';
+import { UserData } from '../main';
+import { Redirect } from 'react-router';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -23,12 +25,12 @@ const styles = (theme: Theme) =>
             marginLeft: '5px',
             marginRight: '5px',
             display: 'inline-block',
-            width: '75px',
+            width: '80px',
             color: 'black',
         },
         divButtons: {
             marginLeft: 'auto',
-            marginRight: 0
+            marginRight: '5px'
         },
         logo: {
             marginLeft: '10px',
@@ -36,7 +38,7 @@ const styles = (theme: Theme) =>
             userSelect: 'none'
         },
         avatar: {
-            marginRight: '30px'
+            marginRight: '30px',
         },
         buttonText: {
             marginLeft: '5px',
@@ -48,6 +50,7 @@ export interface State {
     register: boolean;
     login: boolean;
     menuOpen: boolean;
+    isEmployee: boolean;
 }
 
 export interface Props {
@@ -55,18 +58,13 @@ export interface Props {
     login: (email: string, password: string) => boolean;
     loggedIn: boolean;
     handleLoginPrompt: (event: React.MouseEvent<EventTarget>) => void;
-}
-
-const initialState: State = {
-    register: false,
-    login: false,
-    menuOpen: false
+    loggedInUser: UserData;
 }
 
 type PropsWithStyles = Props & WithStyles<typeof styles>;
 
 function Navbar(props: PropsWithStyles) {
-    const anchorRef = React.useRef<HTMLButtonElement>(null);
+    const anchorRef = React.useRef(null);
     const [login, setLogin] = React.useState(false);
     const [menuOpen, setMenu] = React.useState(false);
     const [register, setRegister] = React.useState(false);
@@ -86,9 +84,27 @@ function Navbar(props: PropsWithStyles) {
         setMenu(!menuOpen)
     }
 
+    function handleMenuEv(event: React.MouseEvent<EventTarget>) {
+        setMenu(!menuOpen)
+        navigate('/evsocial');
+    }
+
     function handleLogout(event: React.MouseEvent<EventTarget>) {
         props.handleLoginPrompt(event);
         setMenu(false);
+        handleHomeClick(event);
+    }
+
+    function handleHomeClick(event: React.MouseEvent<EventTarget>) {
+        navigate('/');
+    }
+
+    function handleBookingsClick(event: React.MouseEvent<EventTarget>) {
+        navigate('/booking');
+    }
+
+    function handleReportsClick(event: React.MouseEvent<EventTarget>) {
+        navigate('/reportproblems');
     }
 
 
@@ -104,16 +120,19 @@ function Navbar(props: PropsWithStyles) {
                 <div className={classNames(props.classes.divButtons)}>
                     {props.loggedIn ?
                         <div>
-                            <Link to="booking">Booking</Link>
-                            <ButtonBase buttonRef={this.anchorRef}
+                            <Button onClick={handleHomeClick}>Home</Button>
+                            {props.loggedIn ? (((Object.keys(props.loggedInUser)[0]).split('@')[1]) === 'booking.com' ?
+                                <Button onClick={handleReportsClick} style={{ marginRight: '600px' }}>View Reports</Button> :
+                                <Button onClick={handleBookingsClick} style={{ marginRight: '650px' }}>Booking</Button>) : <div />}
+                            <ButtonBase buttonRef={anchorRef}
                                 onClick={handleMenu}
                                 aria-owns={menuOpen ? 'menu-list-grow' : undefined}
                                 aria-haspopup="true"
                                 className={classNames(props.classes.avatar)}>
-                                <Avatar>H</Avatar>
-                                <Typography> Hello, Rúben</Typography>
+                                <Avatar style={{ marginRight: '5px' }}>{props.loggedInUser[Object.keys(props.loggedInUser)[0]].firstName.charAt(0)}</Avatar>
+                                <Typography style={{ color: 'black' }}> Hello, {props.loggedInUser[Object.keys(props.loggedInUser)[0]].firstName}</Typography><Icon style={{ color: 'black' }}>arrow_drop_down</Icon>
                             </ButtonBase>
-                            <Popper open={menuOpen} anchorEl={this.anchorRef.current} transition disablePortal>
+                            <Popper open={menuOpen} anchorEl={anchorRef.current} transition disablePortal>
                                 {({ TransitionProps, placement }) => (
                                     <Grow
                                         {...TransitionProps}
@@ -123,7 +142,7 @@ function Navbar(props: PropsWithStyles) {
                                             <ClickAwayListener onClickAway={handleChangeEvent}>
                                                 <MenuList>
                                                     <MenuItem onClick={handleMenu}>Profile</MenuItem>
-                                                    <MenuItem onClick={handleMenu}>My account</MenuItem>
+                                                    {props.loggedIn ? (((Object.keys(props.loggedInUser)[0]).split('@')[1]) === 'booking.com') ? <MenuItem onClick={handleMenuEv}>Evalute Social</MenuItem> : <MenuItem onClick={handleMenu}><Link style={{ textDecoration: 'none', color: 'black' }} to="mybookings">My Bookings</Link></MenuItem> : <div />}
                                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                                                 </MenuList>
                                             </ClickAwayListener>
@@ -135,7 +154,7 @@ function Navbar(props: PropsWithStyles) {
                                     <Grid item>
                                         <Icon>person_add</Icon>
                                     </Grid>
-                                    <Grid item>
+                                    <Grid item style={{ marginLeft: '5px' }}>
                                         Register
                                         </Grid>
                                 </Grid>
@@ -146,7 +165,7 @@ function Navbar(props: PropsWithStyles) {
                                     <Grid item>
                                         <Icon>account_circle</Icon>
                                     </Grid>
-                                    <Grid item>
+                                    <Grid item style={{ marginLeft: '5px' }}>
                                         Login
                                         </Grid>
                                 </Grid>

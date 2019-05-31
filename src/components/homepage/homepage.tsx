@@ -64,8 +64,8 @@ class Homepage extends React.Component<PropsWithStyles, State> {
                         </div>
                     </div>
                 </div>
-                <div style={{ position: 'absolute', width: '100%', top: 400, margin: '0 auto' }}>
-                    <div style={{ display: 'inline-block', width: '25%', textAlign: 'center', height: '200px', verticalAlign: 'top' }}>
+                <div style={{ position: 'absolute', width: '100%', top: 400, textAlign: 'center' }}>
+                    <div style={{ display: 'inline-block', width: '22%', textAlign: 'center', height: '200px', verticalAlign: 'top', marginTop: '25px', marginLeft: '10px' }}>
                         Book a House
                         <div>
                             <ReactSVG src={house} beforeInjection={svg => {
@@ -75,7 +75,7 @@ class Homepage extends React.Component<PropsWithStyles, State> {
                             View multiple Accomodations for your Trip and find the best houses with the best prices.
                         </div>
                     </div>
-                    <div style={{ display: 'inline-block', width: '25%', textAlign: 'center', height: '200px', verticalAlign: 'top' }}>
+                    <div style={{ display: 'inline-block', width: '22%', textAlign: 'center', height: '200px', verticalAlign: 'top', marginTop: '25px', marginLeft: '20px' }}>
                         Rent a Car
                         <ReactSVG src={car} beforeInjection={svg => {
                             svg.setAttribute('width', '50%')
@@ -83,7 +83,7 @@ class Homepage extends React.Component<PropsWithStyles, State> {
                         }} />
                         Move faster during a trip by renting a car. The most recent cars with the best prices.
                     </div>
-                    <div style={{ display: 'inline-block', width: '25%', textAlign: 'center', height: '200px', verticalAlign: 'top' }}>
+                    <div style={{ display: 'inline-block', width: '22%', textAlign: 'center', height: '200px', verticalAlign: 'top', marginTop: '25px', marginLeft: '20px' }}>
                         Book a Trip
                         <div>
                             <ReactSVG src={flight} beforeInjection={svg => {
@@ -93,7 +93,7 @@ class Homepage extends React.Component<PropsWithStyles, State> {
                             Go on vacations with booking and have the best flights guaranteed!
                         </div>
                     </div>
-                    <div style={{ display: 'inline-block', width: '25%', textAlign: 'center', height: '200px', verticalAlign: 'top' }}>
+                    <div style={{ display: 'inline-block', width: '22%', textAlign: 'center', height: '200px', verticalAlign: 'top', marginTop: '25px', marginLeft: '20px' }}>
                         Book a Taxi
                         <ReactSVG src={taxi} beforeInjection={svg => {
                             svg.setAttribute('width', '50%')

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ButtonBase, TextField } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ButtonBase, TextField, Grid } from '@material-ui/core';
 import classNames from 'classnames';
 
 export interface Props {
@@ -58,15 +58,19 @@ class Login extends React.Component<Props, State> {
             onClose={this.props.handleCancel}>
             <DialogTitle>Login</DialogTitle>
             <DialogContent>
-                <DialogContentText>
-                    Email
+                <Grid container direction={'column'}>
+                    <Grid item><DialogContentText>
+                        Email
                 </DialogContentText>
-                <TextField onChange={this.handleEmailChange} error={this.state.error}></TextField>
-                <DialogContentText>
-                    Password
+                        <TextField onChange={this.handleEmailChange} error={this.state.error}></TextField></Grid>
+                    <Grid item>
+                        <DialogContentText>
+                            Password
                 </DialogContentText>
-                {this.state.error ? <TextField error={this.state.error} helperText={'Email or password is wrong!'} onChange={this.handlePasswordChange} type={'password'}></TextField>
-                    : <TextField onChange={this.handlePasswordChange} type={'password'}></TextField>}
+                        {this.state.error ? <TextField error={this.state.error} helperText={'Email or password is wrong!'} onChange={this.handlePasswordChange} type={'password'}></TextField>
+                            : <TextField onChange={this.handlePasswordChange} type={'password'}></TextField>}
+                    </Grid>
+                </Grid>
             </DialogContent>
             <DialogActions>
                 <ButtonBase onClick={this.props.handleCancel}>Cancel</ButtonBase>

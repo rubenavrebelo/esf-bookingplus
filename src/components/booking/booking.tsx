@@ -1,14 +1,32 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
-import { Card, CardContent, Typography } from '@material-ui/core';
-import peugeot from '../../static/peugeot.jpg'
-import CarCards from './car/car';
+import CarCards, { BookingDetails } from './car/car';
+import { CardContent, Card } from '@material-ui/core';
 
-class Booking extends React.Component<RouteComponentProps> {
+export interface State {
+    isBooking: boolean;
+}
+
+export interface Props {
+    addBooking: (booking: BookingDetails) => void;
+}
+
+type PropsDef = Props & RouteComponentProps;
+
+class Booking extends React.Component<PropsDef> {
+    constructor(props: PropsDef) {
+        super(props);
+    }
+
+    getCarInfo = () => {
+
+    }
 
     render() {
         return (
-            <CarCards />
+            <div>
+                <CarCards addBooking={this.props.addBooking} />
+            </div>
         )
     }
 }
