@@ -36,7 +36,7 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.1",
     "react-svg": "^10.0.2",
-    "swiper": "^4.5.0",
+    "swiper": "^6.5.1",
     "tslint": "^5.16.0",
     "typescript": "^3.4.5"
   },
